@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  verdaccio:
+    extends:
+      file: docker-compose.base.yml
+      service: healthcheck-config
+    image: verdaccio/verdaccio:4
+    container_name: verdaccio
+    ports:
+      - 4873:4873
+    volumes:
+      - ./verdaccio/data/conf:/verdaccio/conf
+      - ./verdaccio/data/plugins:/verdaccio/plugins
+      - ./verdaccio/data/storage:/verdaccio/storage
+    environment:
+      - HEALTH_CHECK_PATH=http://verdaccio:4873/-/ping
+
+  catalogue-builder:
+    extends:
+      file: docker-compose.base.yml
+      service: healthcheck-config
+    image: allanoricil/node-red-private-catalogue-builder:0.1.3
+    container_name: catalogue-builder
+    depends_on:
+      verdaccio:
+        condition: service_healthy
+    ports:
+      - 8080:8080
+    volumes:
+      - ./catalogue-builder/data:/catalogue
+    environment:
+      - HEALTH_CHECK_PATH=http://catalogue-builder:8080/health
+      - NAME=verdaccio-catalogue
+      - REGISTRY=http://verdaccio:4873
+
+  node-red:
+    extends:
+      file: docker-compose.base.yml
+      service: healthcheck-config
+    image: nodered/node-red:3.1
+    container_name: node-red
+    depends_on:
+      verdaccio:
+        condition: service_healthy
+      catalogue-builder:
+        condition: service_healthy
+    ports:
+      - 1880:1880
+    volumes:
+      - ./node-red/data:/data
+    environment:
+      - HEALTH_CHECK_PATH=http://node-red:1880/diagnostics
+      
+networks:
+  default:
+    attachable: true

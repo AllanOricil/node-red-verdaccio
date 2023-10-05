@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  healthcheck-config:
+    healthcheck:
+      test: ["CMD", "sh", "/scripts/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+       - ./scripts/healthcheck.sh:/scripts/healthcheck.sh

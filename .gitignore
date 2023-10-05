@@ -1,0 +1,3 @@
+node-red/data/*
+!node-red/data/package.json
+!node-red/data/settings.js
