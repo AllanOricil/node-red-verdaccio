@@ -1,5 +1,0 @@
-Flow to setup Customer instance
-
-- create an elastic ip address (EC2)
-- register this ip to a route 53 (lookup FlowForge) => has 2 records => 1 points to IP address, the other is an alias that points to an A record (wild card)
-- launch the EC2 instance
