@@ -171,11 +171,11 @@ server:
 # https_proxy: https://something.local/
 
 # https://verdaccio.org/docs/configuration#notifications
-# notify:
-#   method: POST
-#   headers: [{ "Content-Type": "application/json" }]
-#   endpoint: https://usagge.hipchat.com/v2/room/3729485/notification?auth_token=mySecretToken
-#   content: '{"color":"green","message":"New package published: * {{ name }}*","notify":true,"message_format":"text"}'
+notify:
+  method: POST
+  headers: [{ "Content-Type": "application/json" }]
+  endpoint: http://catalogue-builder:8080/update
+  content: '{"name": "{{name}}", "versions": "{{versions}}", "dist-tags": "{{dist-tags}}"}'
 
 middlewares:
   audit:
